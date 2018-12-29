@@ -35,7 +35,7 @@ public class frmMostrarCadastroCliente extends javax.swing.JFrame {
         jth.setBackground(new Color(51,51,51));
         jth.setForeground(Color.WHITE);
         jth.setFont(new Font("Century Ghotic", Font.BOLD, 18));
-        jTableCliente.setRowHeight(22);
+        jTableCliente.setRowHeight(24);
     }
     
      public Connection conn = null;
