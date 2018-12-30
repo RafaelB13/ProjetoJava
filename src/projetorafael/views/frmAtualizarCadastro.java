@@ -5,16 +5,18 @@
  */
 package projetorafael.views;
 
-
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import projetorafael.conexao.ConexaoMyDB;
 import projetorafael.model.CadastroCliente;
 import projetorafael.model.CadastroClienteConexao;
 
@@ -22,12 +24,12 @@ import projetorafael.model.CadastroClienteConexao;
  *
  * @author Rafael
  */
-public class frmCadastroCliente extends javax.swing.JFrame {
+public class frmAtualizarCadastro extends javax.swing.JFrame {
 
     /**
-     * Creates new form frmCadastroCliente
+     * Creates new form frmAtualizarCadastro
      */
-    public frmCadastroCliente() {
+    public frmAtualizarCadastro() {
         initComponents();
     }
 
@@ -54,13 +56,14 @@ public class frmCadastroCliente extends javax.swing.JFrame {
         txtIdade = new javax.swing.JTextField();
         txtCpf = new javax.swing.JFormattedTextField();
         txtDataNascimento = new javax.swing.JFormattedTextField();
-        btnSalvar = new javax.swing.JButton();
-        btnLimpar = new javax.swing.JButton();
+        btnAtualizar = new javax.swing.JButton();
         cmbSexo = new javax.swing.JComboBox<>();
         txtCodigo = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setBackground(new java.awt.Color(51, 51, 51));
+        setMaximumSize(new java.awt.Dimension(1000, 700));
+        setMinimumSize(new java.awt.Dimension(1000, 700));
+        setPreferredSize(new java.awt.Dimension(1000, 700));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -70,8 +73,8 @@ public class frmCadastroCliente extends javax.swing.JFrame {
         jpnPrincipal.setBackground(new java.awt.Color(51, 51, 51));
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 0, 51));
-        jLabel1.setText("Cadastro Cliente");
+        jLabel1.setForeground(new java.awt.Color(51, 102, 255));
+        jLabel1.setText("Atualizar Cadastro Cliente");
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -151,39 +154,22 @@ public class frmCadastroCliente extends javax.swing.JFrame {
         }
         txtDataNascimento.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
 
-        btnSalvar.setBackground(new java.awt.Color(153, 153, 153));
-        btnSalvar.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        btnSalvar.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalvar.setText("Salvar");
-        btnSalvar.setBorder(null);
-        btnSalvar.setFocusPainted(false);
-        btnSalvar.setFocusable(false);
-        btnSalvar.setRequestFocusEnabled(false);
-        btnSalvar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnAtualizar.setBackground(new java.awt.Color(51, 51, 255));
+        btnAtualizar.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        btnAtualizar.setForeground(new java.awt.Color(255, 255, 255));
+        btnAtualizar.setText("Atualizar");
+        btnAtualizar.setBorder(null);
+        btnAtualizar.setFocusPainted(false);
+        btnAtualizar.setFocusable(false);
+        btnAtualizar.setRequestFocusEnabled(false);
+        btnAtualizar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSalvarMouseClicked(evt);
+                btnAtualizarMouseClicked(evt);
             }
         });
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalvarActionPerformed(evt);
-            }
-        });
-
-        btnLimpar.setBackground(new java.awt.Color(255, 255, 51));
-        btnLimpar.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        btnLimpar.setText("Limpar");
-        btnLimpar.setBorder(null);
-        btnLimpar.setFocusable(false);
-        btnLimpar.setRequestFocusEnabled(false);
-        btnLimpar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnLimparMouseClicked(evt);
-            }
-        });
-        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimparActionPerformed(evt);
+                btnAtualizarActionPerformed(evt);
             }
         });
 
@@ -233,12 +219,10 @@ public class frmCadastroCliente extends javax.swing.JFrame {
                                     .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(15, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnPrincipalLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(37, 37, 37))))
         );
         jpnPrincipalLayout.setVerticalGroup(
@@ -280,10 +264,8 @@ public class frmCadastroCliente extends javax.swing.JFrame {
                         .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
-                .addGroup(jpnPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
         );
 
@@ -297,92 +279,130 @@ public class frmCadastroCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomeActionPerformed
 
-    private void txtIdadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdadeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdadeActionPerformed
-
     private void txtSobrenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSobrenomeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSobrenomeActionPerformed
 
-    private void btnSalvarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalvarMouseClicked
+    private void txtIdadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdadeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSalvarMouseClicked
+    }//GEN-LAST:event_txtIdadeActionPerformed
 
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        //Enviar para Banco de dados a partir de CadastroCliente
+    private void btnAtualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAtualizarMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAtualizarMouseClicked
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+        //Atualizar Banco de dados a partir de CadastroCliente
+            CadastroCliente.nome_cliente = txtNome.getText();
+            CadastroCliente.sobrenome_cliente = txtSobrenome.getText();
+            CadastroCliente.idade_cliente = Integer.parseInt(txtIdade.getText());
+            
+            DateFormat data = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            
+            try {
+                java.util.Date date = sdf.parse(txtDataNascimento.getText());
+                java.sql.Date dataSql = new java.sql.Date(date.getTime());
+                CadastroCliente.data_nascimento_cliente = dataSql;
+            } catch (ParseException e) {
+                Logger.getLogger(frmCadastroCliente.class.getName()).log(Level.SEVERE, null, e);
+            }
+            
+            CadastroCliente.sexo_cliente = cmbSexo.getSelectedItem().toString();
+            CadastroCliente.cpf_cliente = txtCpf.getText();
+            CadastroCliente.codigo_cliente = txtCodigo.getText();
+            
+            atualizarDados();
         
-        CadastroCliente.codigo_cliente = txtCodigo.getText();
-        CadastroCliente.nome_cliente = txtNome.getText();
-        CadastroCliente.sobrenome_cliente = txtSobrenome.getText();
-        CadastroCliente.cpf_cliente = txtCpf.getText();
+
+    }//GEN-LAST:event_btnAtualizarActionPerformed
+
+    public void atualizarDados(){
+        
+        Connection conn = null;
+        
+        conn = ConexaoMyDB.getConexao();
+        
+        String sql = "UPDATE tb_cadastro SET nome = ?, sobrenome = ?, idade = ?, data_nascimento = ?, sexo = ?, cpf = ? WHERE codigo_cliente = ?";
+        
+        conn = ConexaoMyDB.getConexao();//conectar ao banco de dados
+        
+        PreparedStatement stmt = null;
        
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            java.util.Date date = sdf.parse(txtDataNascimento.getText());
-            java.sql.Date dataSql = new java.sql.Date(date.getTime());
-            CadastroCliente.data_nascimento_cliente = dataSql;
-        } catch (ParseException e) {
-            Logger.getLogger(frmCadastroCliente.class.getName()).log(Level.SEVERE, null, e);
+        
+        try{
+            
+            
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, CadastroCliente.nome_cliente);
+            stmt.setString(2, CadastroCliente.sobrenome_cliente);
+            stmt.setInt(3, CadastroCliente.idade_cliente);
+            stmt.setDate(4, CadastroCliente.data_nascimento_cliente);
+            stmt.setString(5, CadastroCliente.sexo_cliente);
+            stmt.setString(6, CadastroCliente.cpf_cliente);
+            stmt.setString(7, CadastroCliente.codigo_cliente);
+            
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Dados Alterados");
+            
+            
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(null, "Erro ao salvar no banco de dados. Erro: " + ex);
+        }
+        finally{
+            ConexaoMyDB.fecharConexao(conn, stmt);
         }
         
+        this.dispose();
         
-        CadastroCliente.idade_cliente = Integer.parseInt(txtIdade.getText());
-        CadastroCliente.sexo_cliente = cmbSexo.getSelectedItem().toString();
         
-        CadastroClienteConexao cadastrar = new CadastroClienteConexao();
-        cadastrar.InserirCliente();
+    
         
-        JOptionPane.showMessageDialog(null, "Cliente inserido!!");
-        
-    }//GEN-LAST:event_btnSalvarActionPerformed
-
-    private void btnLimparMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnLimparMouseClicked
-
-    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-        //Limpar formulário
-        limparCampos();
-        Date dataSistema = new Date();
-        SimpleDateFormat sdp = new SimpleDateFormat("ddMMyyyy");
-        String data = sdp.format(dataSistema);
-        
-        Calendar horaSistema = Calendar.getInstance();
-        txtCodigo.setText(String.format("%1$tH%1tM%1$ts" + data, horaSistema));
-    }//GEN-LAST:event_btnLimparActionPerformed
-
+    }
+    
     private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        //GERADOR CODIGO AUTOMATICO
-        Date dataSistema = new Date();
-        SimpleDateFormat sdp = new SimpleDateFormat("ddMMyyyy");
-        String data = sdp.format(dataSistema);
-        
-        Calendar horaSistema = Calendar.getInstance();
-        txtCodigo.setText(String.format("%1$tH%1tM%1$ts" + data, horaSistema));
-//
-//          String date_n = new SimpleDateFormat("mmddyyyy", 
-//                  Locale.getDefault()).format(new Date());
-//          NumberFormatException hora = new NumberFormatException(date_n);
-//          
-//          txtCodigo.setText(date_n);
-          
-        
+        // BUSCAR DADOS AO INICIAR
+        preencherJtable();
         
     }//GEN-LAST:event_formWindowOpened
 
-    public void limparCampos(){
-        txtCodigo.setText("");
-        txtNome.setText("");
-        txtSobrenome.setText("");
-        txtCpf.setText("");
-        txtDataNascimento.setText("");
-        txtIdade.setText("");
-        cmbSexo.setSelectedItem(0);
+    //Metodo Para buscar dados
+    public void preencherJtable(){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        conn = ConexaoMyDB.getConexao();
+        
+        String sql = "SELECT * FROM tb_cadastro WHERE id_tb_cadastro = '" + CadastroCliente.id_tb_cadastro + "'";
+        
+        try {
+            stmt = conn.prepareCall(sql);
+            stmt.execute();
+            
+            rs = stmt.executeQuery();
+            rs.next();
+            txtCodigo.setText(rs.getString("codigo_cliente"));
+            txtNome.setText(rs.getString("nome"));
+            txtSobrenome.setText(rs.getString("sobrenome"));
+            txtCpf.setText(rs.getString("cpf"));
+            DateFormat data = new SimpleDateFormat("dd/MM/yyyy");
+            txtDataNascimento.setText(data.format(rs.getDate("data_nascimento")));
+            txtIdade.setText(rs.getString("idade"));
+            cmbSexo.setSelectedItem(rs.getString("sexo"));
+            
+        } catch (SQLException e) {
+            
+            JOptionPane.showMessageDialog(null, "Erro ao buscar no banco de dados. ERRO: "+e);
+        }finally{
+            ConexaoMyDB.fecharConexao(conn, stmt, rs);
+        }
+        
     }
     
     /**
@@ -402,27 +422,26 @@ public class frmCadastroCliente extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmCadastroCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmAtualizarCadastro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmCadastroCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmAtualizarCadastro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmCadastroCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmAtualizarCadastro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmCadastroCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmAtualizarCadastro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmCadastroCliente().setVisible(true);
+                new frmAtualizarCadastro().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnLimpar;
-    private javax.swing.JButton btnSalvar;
+    private javax.swing.JButton btnAtualizar;
     private javax.swing.JComboBox<String> cmbSexo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

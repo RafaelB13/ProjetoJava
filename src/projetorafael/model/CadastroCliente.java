@@ -10,8 +10,6 @@ import java.sql.Date;
 public class CadastroCliente {
     
     public static int id_tb_cadastro;
-    
-    
     public static String codigo_cliente;
     public static String nome_cliente;
     public static String sobrenome_cliente;
